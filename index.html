@@ -24,7 +24,7 @@
 
     <h1 class="title">Boyer-Moore String Search Algorithm</h1>
     <p>Enter a text and pattern to visualize the search:</p>
-    <input type="text" id="text" placeholder="Enter text" size="50" value="The quick brown fox jumps over the lazy dog">
+    <input type="text" id="text" placeholder="Enter text" size="50" value="The quick brown fox jumps over the lazy dog. Foxes are clever.">
     <input type="text" id="pattern" placeholder="Enter pattern" value="fox">
     <button onclick="search()">Search</button>
 
@@ -43,20 +43,26 @@
                 return;
             }
 
-            let index = boyerMoore(text, pattern);
-            if (index !== -1) {
-                output.innerHTML = `✅ Pattern found at index <b>${index}</b>`;
-                visualizeMatch(text, pattern, index);
+            let indices = boyerMoore(text, pattern);
+            if (indices.length > 0) {
+                output.innerHTML = `✅ Pattern found at indices: <b>${indices.join(", ")}</b>`;
+                visualizeMatches(text, pattern, indices);
             } else {
                 output.innerHTML = "❌ Pattern not found.";
                 visualization.innerHTML = "";
             }
         }
 
-        function visualizeMatch(text, pattern, index) {
-            let highlightedText = text.substring(0, index) +
-                `<span class="highlight">${text.substring(index, index + pattern.length)}</span>` +
-                text.substring(index + pattern.length);
+        function visualizeMatches(text, pattern, indices) {
+            let highlightedText = "";
+            let lastIndex = 0;
+            
+            indices.forEach(index => {
+                highlightedText += text.substring(lastIndex, index) + 
+                    `<span class="highlight">${text.substring(index, index + pattern.length)}</span>`;
+                lastIndex = index + pattern.length;
+            });
+            highlightedText += text.substring(lastIndex);
 
             document.getElementById("visualization").innerHTML = `Result: ${highlightedText}`;
         }
@@ -65,6 +71,7 @@
             let m = pattern.length;
             let n = text.length;
             let badChar = badCharacterTable(pattern);
+            let indices = [];
 
             let s = 0;
             while (s <= (n - m)) {
@@ -73,13 +80,14 @@
                     j--;
 
                 if (j < 0) {
-                    return s;
+                    indices.push(s);
+                    s += (s + m < n) ? m - (badChar[text[s + m]] || -1) : 1;
                 } else {
                     let shift = Math.max(1, j - (badChar[text[s + j]] || -1));
                     s += shift;
                 }
             }
-            return -1;
+            return indices;
         }
 
         function badCharacterTable(pattern) {
