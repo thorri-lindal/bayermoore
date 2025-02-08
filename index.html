@@ -33,8 +33,8 @@
 
     <script>
         function search() {
-            let text = document.getElementById("text").value;
-            let pattern = document.getElementById("pattern").value;
+            let text = document.getElementById("text").value.toLowerCase();
+            let pattern = document.getElementById("pattern").value.toLowerCase();
             let output = document.getElementById("output");
             let visualization = document.getElementById("visualization");
 
@@ -54,15 +54,16 @@
         }
 
         function visualizeMatches(text, pattern, indices) {
+            let originalText = document.getElementById("text").value;
             let highlightedText = "";
             let lastIndex = 0;
             
             indices.forEach(index => {
-                highlightedText += text.substring(lastIndex, index) + 
-                    `<span class="highlight">${text.substring(index, index + pattern.length)}</span>`;
+                highlightedText += originalText.substring(lastIndex, index) + 
+                    `<span class="highlight">${originalText.substring(index, index + pattern.length)}</span>`;
                 lastIndex = index + pattern.length;
             });
-            highlightedText += text.substring(lastIndex);
+            highlightedText += originalText.substring(lastIndex);
 
             document.getElementById("visualization").innerHTML = `Result: ${highlightedText}`;
         }
