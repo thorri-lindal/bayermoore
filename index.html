@@ -1,35 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="""en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boyer-Moore String Search</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
-        input, button { margin: 10px; padding: 8px; font-size: 16px; }
-        #output { margin-top: 20px; font-size: 18px; }
-        .highlight { background-color: yellow; font-weight: bold; }
-        <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            text-align: center;
+        }
+
+        input,
+        button {
+            margin: 10px;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Rubik&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <h1 class="title">Boyer-Moore String Search Algorithm</h1>
     <p>Enter a text and pattern to visualize the search:</p>
-    <input type="text" id="text" placeholder="Enter text" size="50">
-    <input type="text" id="pattern" placeholder="Enter pattern">
+    <input type="text" id="text" placeholder="Enter text" size="50" value="the quick brown fox jumps over the lazy dog.">
+    <input type="text" id="pattern" placeholder="Enter pattern" value="fox">
     <button onclick="search()">Search</button>
 
     <p id="output"></p>
     <p id="visualization"></p>
-<style>
-    .title {
-    font-family: 'Lora', serif;
-    font-size: 2.5rem;
-    font-weight: 700;
-}
-
-</style>
+    <style>
+        .title {
+            font-family: 'Lora', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+    </style>
     <script>
         function search() {
             let text = document.getElementById("text").value;
@@ -92,4 +112,5 @@
     </script>
 
 </body>
+
 </html>
