@@ -1,58 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boyer-Moore Search</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Rubik&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Boyer-Moore String Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+        input, button { margin: 10px; padding: 8px; font-size: 16px; }
+        #output { margin-top: 20px; font-size: 18px; }
+        .highlight { background-color: yellow; font-weight: bold; }
+        <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&display=swap" rel="stylesheet">
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Boyer-Moore Search Algorithm</h1>
-        <textarea id="text" placeholder="Enter text" rows="10" cols="50">But thy eternal summer shall not fade,
-Nor lose possession of that fair thou ow’st;
-Nor shall death brag thou wander’st in his shade,
-When in eternal lines to time thou grow’st:
-   So long as men can breathe or eyes can see,
-   So long lives this, and this gives life to thee.</textarea>
 
-        <br>
-        <input type="text" id="pattern" placeholder="Enter search pattern" value="fox">
-        <button onclick="startSearch()">Start</button>
+    <h1 class="title">The Boyer-Moore String Search Algorithm</h1>
+    <p>Enter a text and pattern to visualize the search:</p>
+    <input type="text" id="text" placeholder="Enter text" size="50">
+    <input type="text" id="pattern" placeholder="Enter pattern">
+    <button onclick="search()">Search</button>
 
-        <p id="output"></p>
-        <p id="visualization"></p>
+    <p id="output"></p>
+    <p id="visualization"></p>
+<style>
+    .title {
+    font-family: 'Lora', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
 
-        <div class="step-buttons">
-            <button onclick="nextStep()">Next Step</button>
-            <button onclick="resetSearch()">Reset</button>
-        </div>
+</style>
+    <script>
+        function search() {
+            let text = document.getElementById("text").value;
+            let pattern = document.getElementById("pattern").value;
+            let output = document.getElementById("output");
+            let visualization = document.getElementById("visualization");
 
-        <h2>Comparison Table</h2>
-        <table id="comparison-table">
-            <thead>
-                <tr>
-                    <th>Step</th>
-                    <th>Text Position</th>
-                    <th>Mismatch?</th>
-                    <th>Shift Value</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            if (!text || !pattern) {
+                output.textContent = "⚠️ Please enter both text and pattern.";
+                return;
+            }
 
-        <h2>Bad Character Heuristic Table</h2>
-        <table id="bad-char-table">
-            <thead>
-                <tr>
-                    <th>Character</th>
-                    <th>Last Position in Pattern</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <script src="script.js"></script>
+            let index = boyerMoore(text, pattern);
+            if (index !== -1) {
+                output.innerHTML = `✅ Pattern found at index <b>${index}</b>`;
+                visualizeMatch(text, pattern, index);
+            } else {
+                output.innerHTML = "❌ Pattern not found.";
+                visualization.innerHTML = "";
+            }
+        }
+
+        function visualizeMatch(text, pattern, index) {
+            let highlightedText = text.substring(0, index) +
+                `<span class="highlight">${text.substring(index, index + pattern.length)}</span>` +
+                text.substring(index + pattern.length);
+
+            document.getElementById("visualization").innerHTML = `Result: ${highlightedText}`;
+        }
+
+        function boyerMoore(text, pattern) {
+            let m = pattern.length;
+            let n = text.length;
+            let badChar = badCharacterTable(pattern);
+
+            let s = 0;
+            while (s <= (n - m)) {
+                let j = m - 1;
+                while (j >= 0 && pattern[j] === text[s + j])
+                    j--;
+
+                if (j < 0) {
+                    return s;
+                } else {
+                    let shift = Math.max(1, j - (badChar[text[s + j]] || -1));
+                    s += shift;
+                }
+            }
+            return -1;
+        }
+
+        function badCharacterTable(pattern) {
+            let badChar = {};
+            let m = pattern.length;
+            for (let i = 0; i < m; i++) {
+                badChar[pattern[i]] = i;
+            }
+            return badChar;
+        }
+    </script>
+
 </body>
 </html>
